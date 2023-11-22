@@ -20,7 +20,6 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-
     // TODO(issuh) : need implement security configure
     httpSecurity
       .csrf().disable().authorizeRequests().anyRequest().permitAll();

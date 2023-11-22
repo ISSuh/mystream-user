@@ -49,7 +49,7 @@ public class UserService {
     userRepository.save(user);
 
     return new UserDto(user);
-  }  
+  }
 
   public UserDto updateUseProfile(Long id, UserDto userDto) {
     User user =

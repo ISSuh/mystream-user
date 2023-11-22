@@ -23,7 +23,6 @@ import mystream.user.dto.SignUpDto;
 import mystream.user.dto.UserDto;
 import mystream.user.entity.Email;
 import mystream.user.entity.User;
-import mystream.user.repository.FollowRepository;
 import mystream.user.repository.UserRepository;
 
 @SpringBootTest
@@ -38,9 +37,6 @@ public class UserRestControllerTest {
   @Autowired
   private UserRepository userRepository;
 
-  @Autowired
-  private FollowRepository followRepository;
-
   @BeforeAll
   public void beforeAll() {
     for (Long i = 0L ; i < 10 ; i++) {
@@ -52,12 +48,6 @@ public class UserRestControllerTest {
 
       userRepository.save(user);
     }
-
-    // for (Long i = 1L ; i < 10 ; i *= 2) {
-    //   User user = userRepository.findById(i).get();
-    //   FollowedChannel channel = new FollowedChannel(i, user);
-    //   followRepository.save(channel);
-    // }
   }
 
   @Test
