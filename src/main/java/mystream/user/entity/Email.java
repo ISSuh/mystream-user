@@ -13,16 +13,16 @@ import lombok.Getter;
 @Getter
 public class Email {
   
-  private String email;
+  private String address;
 
   protected Email() {
   }
 
-  public Email(String email) {
-    Preconditions.checkArgument(!StringUtils.hasText(email), "email must be not empty");
-    Preconditions.checkArgument(isValid(email), "email is not valid");
+  public Email(String address) {
+    Preconditions.checkArgument(StringUtils.hasText(address), "email address must be not empty");
+    Preconditions.checkArgument(isValid(address), "email address is not valid");
 
-    this.email = email;
+    this.address = address;
   }
 
   public static Email of(String email) {
@@ -34,14 +34,18 @@ public class Email {
   }
 
   public String toEmailAddress() {
-    return this.email;
+    return this.address;
+  }
+
+  public boolean isEqualAddress(String address) {
+    return (this.address == address);
   }
 
   @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((email == null) ? 0 : email.hashCode());
+    result = prime * result + ((address == null) ? 0 : address.hashCode());
     return result;
   }
 
@@ -54,13 +58,12 @@ public class Email {
     if (getClass() != obj.getClass())
       return false;
     Email other = (Email) obj;
-    if (email == null) {
-      if (other.email != null)
+    if (address == null) {
+      if (other.address != null)
         return false;
-    } else if (!email.equals(other.email))
+    } else if (!address.equals(other.address))
       return false;
     return true;
   }
-
   
 }

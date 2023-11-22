@@ -9,15 +9,15 @@ public class SignUpDto {
 
   private String username;
 
-  private String passwd;
+  private String password;
 
   public SignUpDto() {
   }
 
-  public SignUpDto(String email, String username, String passwd) {
+  public SignUpDto(String email, String username, String password) {
     this.email = email;
     this.username = username;
-    this.passwd = passwd;
+    this.password = password;
   }
 
 }

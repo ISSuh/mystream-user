@@ -29,6 +29,11 @@ public class FollowService {
       throw new InvalidFollowException("already " + status.toString() + " channel. " + followDto.getChannelId());
     }
 
+    // TODO(issuh) : need implement request to channel service
+    // if (fail) {
+    //   throw new exception
+    // }
+
     channel.updateFollowStatus(status);
   }
 

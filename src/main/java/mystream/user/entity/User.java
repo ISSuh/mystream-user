@@ -1,10 +1,7 @@
 package mystream.user.entity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -29,33 +26,68 @@ public class User extends ModifyTime {
   @Column(name = "user_id")
   private Long id;
 
+  @Column(name = "channel_id", unique = true)
+  private Long channelId;
+
   @Embedded
-  @Column(name = "email")
+  @Column(name = "email", nullable = false, unique = true)
   private Email email;
 
-  @Column(name = "username")
+  @Column(name = "username", nullable = false, unique = true)
   private String username;
 
-  @Column(name = "password")
+  @Column(name = "password", nullable = false)
   private String password;
-
-  // private Long channelId;
 
   @OneToMany(mappedBy = "user")
   Map<Long, FollowedChannel> followingChannels = new HashMap<>();
 
   @OneToMany(mappedBy = "user")
-  List<SubscribedChannel> subscribedChannels = new ArrayList<>();
+  Map<Long, SubscribedChannel> subscribedChannels = new HashMap<>();
+
+  public User(Email email, String username, String password) {
+    this(null, null, email, username, password, null, null);
+  }
+
+  public User(Long id, Long channelId, Email email, String username, String password,
+      Map<Long, FollowedChannel> followingChannels, Map<Long, SubscribedChannel> subscribedChannels) {
+    this.id = id;
+    this.channelId = channelId;
+    this.email = email;
+    this.username = username;
+    this.password = password;
+
+    if (followingChannels != null) {
+      this.followingChannels = followingChannels;
+    }
+
+    if (subscribedChannels != null) {
+      this.subscribedChannels = subscribedChannels;
+    }
+  }
+
+  public void updateUserName(String username) {
+    this.username = username;
+  }
+
+  public void updateEmail(Email email) {
+    this.email = email;
+  }
 
   public void follwedChannel(FollowedChannel channel) {
     this.followingChannels.put(channel.getChannelId(), channel);
   }
 
   public void unfollwedChannel(FollowedChannel channel) {
-    this.followingChannels.put(channel.getChannelId(), channel);
+    this.followingChannels.remove(channel.getChannelId());
   }
 
-  public void addSubscribedChannel(SubscribedChannel channel) {
-    this.subscribedChannels.add(channel);
+  public void subscribedChannel(SubscribedChannel channel) {
+    this.subscribedChannels.put(channel.getChannelId(), channel);
   }
+
+  public void unSubscribedChannel(SubscribedChannel channel) {
+    this.subscribedChannels.remove(channel.getChannelId());
+  }
+
 }
