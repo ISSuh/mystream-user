@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="_NiuC_yrdkO8kt6QhC4k" name="V1">
-        <mxGraphModel dx="558" dy="391" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="652" dy="633" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -44,7 +44,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="N3MZFxQlsv-xnbAbyV0t" name="event_storming">
-        <mxGraphModel dx="2560" dy="2078" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1502" dy="1733" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -54,7 +54,7 @@
                 <mxCell id="lFZYL3ujdIrfbRVy7mhN-55" value="" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;" parent="lFZYL3ujdIrfbRVy7mhN-54" vertex="1">
                     <mxGeometry width="780" height="580" as="geometry"/>
                 </mxCell>
-                <mxCell id="lFZYL3ujdIrfbRVy7mhN-56" value="회원" style="fillColor=#FFC82E;strokeColor=none;fontSize=14;" parent="lFZYL3ujdIrfbRVy7mhN-54" vertex="1">
+                <mxCell id="lFZYL3ujdIrfbRVy7mhN-56" value="팔로잉채널" style="fillColor=#FFC82E;strokeColor=none;fontSize=14;" parent="lFZYL3ujdIrfbRVy7mhN-54" vertex="1">
                     <mxGeometry x="491.25" y="150" width="100" height="100" as="geometry"/>
                 </mxCell>
                 <mxCell id="lFZYL3ujdIrfbRVy7mhN-57" value="회원" style="fillColor=#FFC82E;strokeColor=none;fontSize=14;" parent="lFZYL3ujdIrfbRVy7mhN-54" vertex="1">
@@ -93,7 +93,7 @@
                 <mxCell id="lFZYL3ujdIrfbRVy7mhN-68" value="회원 생성" style="fillColor=#83389B;strokeColor=none;fontSize=14;fontStyle=0;fontColor=#FFFFFF;" parent="lFZYL3ujdIrfbRVy7mhN-54" vertex="1">
                     <mxGeometry x="260" y="165" width="90" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="lFZYL3ujdIrfbRVy7mhN-69" value="회원" style="fillColor=#FFC82E;strokeColor=none;fontSize=14;" parent="lFZYL3ujdIrfbRVy7mhN-54" vertex="1">
+                <mxCell id="lFZYL3ujdIrfbRVy7mhN-69" value="구독채널" style="fillColor=#FFC82E;strokeColor=none;fontSize=14;" parent="lFZYL3ujdIrfbRVy7mhN-54" vertex="1">
                     <mxGeometry x="120" y="385" width="100" height="100" as="geometry"/>
                 </mxCell>
                 <mxCell id="lFZYL3ujdIrfbRVy7mhN-70" value="구독" style="fillColor=#1EB5BD;strokeColor=none;fontSize=14;" parent="lFZYL3ujdIrfbRVy7mhN-54" vertex="1">
@@ -124,7 +124,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="rrRWOHWCN6pNSkYYTB03" name="context_map">
-        <mxGraphModel dx="634" dy="1127" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="652" dy="1733" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>

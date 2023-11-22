@@ -2,9 +2,14 @@ package mystream.user.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.ColumnDefault;
+
+import com.google.common.base.Preconditions;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,7 +42,44 @@ public class FollowedChannel extends ModifyTime {
   private User user;
 
   @Temporal(TemporalType.TIMESTAMP)
-  @Column(name = "followed_id", nullable = false)
-  LocalDateTime followedAt;
+  @Column(name = "followed_at")
+  private LocalDateTime followedAt;
+
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "unfollowed_at")
+  private LocalDateTime unfollowedAt;
+
+  @Enumerated
+  @Column(name = "follow_status")
+  @ColumnDefault("'UNFOLLOW'")
+  private FollowStatus followStatus;
+
+  public FollowedChannel(Long channelId, User user) {
+    this(null, channelId, user, null, null, FollowStatus.UNFOLLOW);
+  }
+
+  public FollowedChannel(Long id, Long channelId, User user, LocalDateTime followedAt, LocalDateTime unfollowedAt,
+      FollowStatus followStatus) {
+    Preconditions.checkArgument(channelId != null, "channelId must be not null");
+
+    this.id = id;
+    this.channelId = channelId;
+    this.user = user;
+    this.followedAt = followedAt;
+    this.unfollowedAt = unfollowedAt;
+    this.followStatus = followStatus;
+  }
+
+  public void updateFollowStatus(FollowStatus status) {
+    this.followStatus = status;
+
+    if (status == FollowStatus.FOLLOW) {
+      this.user.follwedChannel(this);
+      this.followedAt = LocalDateTime.now();
+    } else {
+      this.user.unfollwedChannel(this);
+      this.unfollowedAt = LocalDateTime.now();
+    }
+  }
 
 }
