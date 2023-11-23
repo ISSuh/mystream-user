@@ -4,8 +4,11 @@ import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import mystream.user.dto.NewChannelDto;
+import mystream.user.dto.NewStreamDto;
 import mystream.user.dto.SignUpDto;
 import mystream.user.dto.UserDto;
 import mystream.user.entity.Email;
@@ -14,13 +17,20 @@ import mystream.user.exceptions.InvalidSignupException;
 import mystream.user.exceptions.InvalidUserProfileException;
 import mystream.user.exceptions.NotFoundException;
 import mystream.user.repository.UserRepository;
+import mystream.user.service.external.BroadcastServiceClient;
+import mystream.user.service.external.ChannelServiceClient;
+import mystream.user.utils.ApiResponse;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
   
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+
+  private final BroadcastServiceClient broadcastServiceClient;
+  private final ChannelServiceClient channelServiceClient;
 
   public UserDto findUserById(Long id) {
     return userRepository.findUserDtoByIdTo(id)
@@ -44,11 +54,25 @@ public class UserService {
     String encodePassword = passwordEncoder.encode(signUpDto.getPassword());
     User user = new User(email, signUpDto.getUsername(), encodePassword);
 
-    // TODO(issuh) : need send user create event to broadcast, channel service
+    User saved = userRepository.save(user);
+    
+    // // reqquest create new stream
+    NewStreamDto newStreamDto = new NewStreamDto(saved.getId(), saved.getUsername());
+    ApiResponse.ApiResult<?> result = broadcastServiceClient.createStream(newStreamDto);
+    if (!result.isSuccess()) {
+      userRepository.delete(saved);
+      throw new InvalidSignupException("stream create faile");
+    }
 
-    userRepository.save(user);
+    // reqquest create new channel
+    NewChannelDto newChannelDto = new NewChannelDto(saved.getId());
+    result = channelServiceClient.createChannel(newChannelDto);
+    if (!result.isSuccess()) {
+      userRepository.delete(saved);
+      throw new InvalidSignupException("channel create faile");
+    }
 
-    return new UserDto(user);
+    return new UserDto(saved);
   }
 
   public UserDto updateUseProfile(Long id, UserDto userDto) {
