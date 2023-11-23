@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import mystream.user.dto.NewChannelDto;
 import mystream.user.dto.NewStreamDto;
 import mystream.user.dto.SignUpDto;
 import mystream.user.dto.UserDto;
@@ -18,8 +17,8 @@ import mystream.user.exceptions.InvalidUserProfileException;
 import mystream.user.exceptions.NotFoundException;
 import mystream.user.repository.UserRepository;
 import mystream.user.service.external.BroadcastServiceClient;
+import mystream.user.service.external.BroadcastServiceProducer;
 import mystream.user.service.external.ChannelServiceClient;
-import mystream.user.utils.ApiResponse;
 
 @Service
 @Transactional
@@ -31,6 +30,8 @@ public class UserService {
 
   private final BroadcastServiceClient broadcastServiceClient;
   private final ChannelServiceClient channelServiceClient;
+
+  private final BroadcastServiceProducer broadcastServiceProducer;
 
   public UserDto findUserById(Long id) {
     return userRepository.findUserDtoByIdTo(id)
@@ -58,19 +59,21 @@ public class UserService {
     
     // // reqquest create new stream
     NewStreamDto newStreamDto = new NewStreamDto(saved.getId(), saved.getUsername());
-    ApiResponse.ApiResult<?> result = broadcastServiceClient.createStream(newStreamDto);
-    if (!result.isSuccess()) {
+
+    try {
+      broadcastServiceProducer.createStream(newStreamDto);
+    } catch (RuntimeException e) {
       userRepository.delete(saved);
-      throw new InvalidSignupException("stream create faile");
+      throw new RuntimeException("internal system error");
     }
 
-    // reqquest create new channel
-    NewChannelDto newChannelDto = new NewChannelDto(saved.getId());
-    result = channelServiceClient.createChannel(newChannelDto);
-    if (!result.isSuccess()) {
-      userRepository.delete(saved);
-      throw new InvalidSignupException("channel create faile");
-    }
+    // // reqquest create new channel
+    // NewChannelDto newChannelDto = new NewChannelDto(saved.getId());
+    // result = channelServiceClient.createChannel(newChannelDto);
+    // if (!result.isSuccess()) {
+    //   userRepository.delete(saved);
+    //   throw new InvalidSignupException("channel create faile");
+    // }
 
     return new UserDto(saved);
   }
