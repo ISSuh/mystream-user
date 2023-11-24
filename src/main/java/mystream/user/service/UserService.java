@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import mystream.user.dto.NewStreamDto;
 import mystream.user.dto.SignUpDto;
 import mystream.user.dto.UserDto;
 import mystream.user.entity.Email;
@@ -19,6 +18,7 @@ import mystream.user.repository.UserRepository;
 import mystream.user.service.external.BroadcastServiceClient;
 import mystream.user.service.external.BroadcastServiceProducer;
 import mystream.user.service.external.ChannelServiceClient;
+import mystream.user.service.external.event.NewStreamEvent;
 
 @Service
 @Transactional
@@ -58,10 +58,10 @@ public class UserService {
     User saved = userRepository.save(user);
     
     // // reqquest create new stream
-    NewStreamDto newStreamDto = new NewStreamDto(saved.getId(), saved.getUsername());
+    NewStreamEvent newStreamEvent = new NewStreamEvent(saved.getId(), saved.getUsername());
 
     try {
-      broadcastServiceProducer.createStream(newStreamDto);
+      broadcastServiceProducer.createStream(newStreamEvent);
     } catch (RuntimeException e) {
       userRepository.delete(saved);
       throw new RuntimeException("internal system error");

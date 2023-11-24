@@ -1,32 +1,32 @@
 package mystream.user.service.external;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.RequiredArgsConstructor;
-import mystream.user.dto.NewStreamDto;
+import lombok.extern.slf4j.Slf4j;
+import mystream.user.service.external.event.NewStreamEvent;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BroadcastServiceProducer {
 
   static private final String TOPIC_CREATE_STREAM = "create-stream";
 
-  private final KafkaTemplate<String, NewStreamDto> kafkaTemplate;
-  private final ObjectMapper objectMapper = new ObjectMapper();
+  private final KafkaTemplate<String, NewStreamEvent> createStreamTemplate;
 
-  public void createStream(NewStreamDto newStreamDto) {
-    // ToStringSerializer<NewStreamDto> serializer = new ToStringSerializer<>();
-    // String json = null;
-    // try {
-    //   json = objectMapper.writeValueAsString(newStreamDto);
-    // } catch(JsonProcessingException e) {
-    //   throw new InvalidSignupException("invalid signup value");
-    // }
+  public void createStream(NewStreamEvent event) {
+    CompletableFuture<SendResult<String, NewStreamEvent>> future = createStreamTemplate.send(TOPIC_CREATE_STREAM, event);
+    future.whenComplete(
+      (result, e) -> {
+          log.info("[TEST][createStream]result = {}, e = {}", result, e.getMessage());
+      }
+    );
 
-    // serializer.serialize(TOPIC_CREATE_STREAM, newStreamDto)
-    kafkaTemplate.send(TOPIC_CREATE_STREAM, newStreamDto);
+    createStreamTemplate.flush();
   }
 }

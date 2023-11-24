@@ -5,11 +5,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class NewStreamFallbackEvent {
+public class NewStreamFacllbackEvent {
   
   private Long id;
 
-  public NewStreamFallbackEvent(Long id) {
+  public NewStreamFacllbackEvent(Long id) {
     this.id = id;
   }
 

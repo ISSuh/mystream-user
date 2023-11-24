@@ -30,3 +30,8 @@ logging.level:
 eureka:
   client:
     enabled: false
+
+kafka:
+  bootstrap-servers: localhost:9092
+  consumer:
+    group-id: mystream-user
