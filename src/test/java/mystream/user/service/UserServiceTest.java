@@ -4,65 +4,54 @@ import static org.mockito.Mockito.timeout;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.kafka.annotation.EnableKafka;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import org.springframework.kafka.test.EmbeddedKafkaBroker;
-import org.springframework.kafka.test.context.EmbeddedKafka;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 import mystream.user.dto.SignUpDto;
+import mystream.user.dto.UserDto;
+import mystream.user.exceptions.NotFoundException;
 import mystream.user.service.external.event.NewStreamEvent;
 import mystream.user.service.external.event.NewStreamFacllbackEvent;
-import mystream.user.service.kafka.TestProducer;
 import mystream.user.service.kafka.TestConsumer;
+import mystream.user.service.kafka.TestProducer;
 
 @SpringBootTest()
 @Import({UserServiceTest.TestConfig.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@EmbeddedKafka(
-  partitions = 1,
-  brokerProperties = { "listeners=PLAINTEXT://localhost:9092", "port=9092" }
-)
 @Slf4j
 public class UserServiceTest {
-
-  @Autowired
-  private EmbeddedKafkaBroker embeddedKafkaBroker;
 
   @Autowired
   private UserService userService;
@@ -70,35 +59,28 @@ public class UserServiceTest {
   @SpyBean
   private EventFallbackService eventFallbackService;
 
-  @Captor
-  private ArgumentCaptor<NewStreamFacllbackEvent> fallbackEventCap;
-
   @Autowired
   private TestProducer testProducer;
 
   @SpyBean
   private TestConsumer testConsumer;
 
-  @Captor
-  private ArgumentCaptor<NewStreamEvent> newSteamEventCap;
-
   @TestConfiguration
   @EnableKafka
   static public class TestConfig {
 
     @Bean
-    ProducerFactory<String, NewStreamFacllbackEvent> producerFactory() {
+    ProducerFactory<String, NewStreamFacllbackEvent> testProducerFactory() {
       Map<String, Object> properties = new HashMap<>();
       properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
       properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-      properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-      
+      properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);      
       return new DefaultKafkaProducerFactory<>(properties);
     }
 
     @Bean
     KafkaTemplate<String, NewStreamFacllbackEvent> newproducer() {
-      return new KafkaTemplate<String, NewStreamFacllbackEvent>(producerFactory());
+      return new KafkaTemplate<String, NewStreamFacllbackEvent>(testProducerFactory());
     }
 
     @Bean
@@ -118,50 +100,51 @@ public class UserServiceTest {
       factory.setConsumerFactory(newStreamConsumerFactory());
       return factory;
     }
+
   }
 
   @Test
   @Order(1)
-  public void createUser() {
-    String email = "tester@gmail.com";
-    String usernmae = "tester";
-    String password = "tester";
+  public void createUser() throws JsonMappingException, JsonProcessingException {
+    String email = "tester1@gmail.com";
+    String username = "tester1";
+    String password = "tester1";
 
-    SignUpDto dto = new SignUpDto(email, usernmae, password);
-    userService.create(dto);
+    SignUpDto dto = new SignUpDto(email, username, password);
+    UserDto saved = userService.create(dto);
 
+    ArgumentCaptor<String> cap = ArgumentCaptor.forClass(String.class);
+    Mockito.verify(testConsumer, timeout(3000).times(1))
+      .receiveNewStreamEvent(cap.capture());
+
+    ObjectMapper mapper = new ObjectMapper();
+    NewStreamEvent event = mapper.readValue(cap.getValue(), NewStreamEvent.class);
+    Assertions.assertThat(event.getId()).isEqualTo(saved.getId());
+    Assertions.assertThat(event.getUsername()).isEqualTo(saved.getUsername());
   }
 
   @Test
   @Order(2)
-  public void createUserFallback() {
-    String email = "tester@gmail.com";
-    String usernmae = "tester";
-    String password = "tester";
+  public void createUserFallback() throws JsonMappingException, JsonProcessingException {
+    String email = "tester2@gmail.com";
+    String usernmae = "tester2";
+    String password = "tester2";
 
-    // SignUpDto dto = new SignUpDto(email, usernmae, password);
-    // UserDto user = userService.create(dto);
+    SignUpDto dto = new SignUpDto(email, usernmae, password);
+    UserDto user = userService.create(dto);
 
+    testProducer.sendStreamFallback(user.getId());
 
-    // NewStreamFacllbackEvent fallbackEvent = new NewStreamFacllbackEvent(user.getId());
-    // ProducerRecord<String, NewStreamFacllbackEvent> record =
-    //   new ProducerRecord<String,NewStreamFacllbackEvent>("create-stream-fallback", fallbackEvent);
-    // fallbackProducer.send(record);
-    // fallbackProducer.flush();
-
-    testProducer.sendStreamFallback(1L);
-
+    ArgumentCaptor<String> cap = ArgumentCaptor.forClass(String.class);
     Mockito.verify(eventFallbackService, timeout(3000).times(1))
-      .createStreamFallback(fallbackEventCap.capture());
+      .createStreamFallback(cap.capture());
 
-  }
-
-  @Test
-  void asoaihds() {
-    testProducer.sendStreamFallback(1L);
+    ObjectMapper mapper = new ObjectMapper();
+    NewStreamFacllbackEvent event = mapper.readValue(cap.getValue(), NewStreamFacllbackEvent.class);
+    Assertions.assertThat(event.getId()).isEqualTo(user.getId());
     
-    ArgumentCaptor<NewStreamFacllbackEvent> cap = ArgumentCaptor.forClass(NewStreamFacllbackEvent.class);
-    Mockito.verify(testConsumer, timeout(5000).times(1))
-      .receiveNewStreamFallbackEvent(cap.capture());
+    Assertions.assertThatThrownBy(() -> userService.findUserById(user.getId()))
+      .isInstanceOf(NotFoundException.class);
   }
+
 }

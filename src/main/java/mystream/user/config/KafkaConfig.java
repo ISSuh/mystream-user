@@ -27,8 +27,40 @@ import mystream.user.service.external.event.NewStreamFacllbackEvent;
 @EnableKafka
 public class KafkaConfig {
   
-  @Value("${kafka.bootstrap-servers}")
+  @Value("${kafka.consumer.bootstrap-servers}")
   private String bootstrapServer;
+
+  @Bean
+  ProducerFactory<String, String> producerFactory() {
+    Map<String, Object> properties = new HashMap<>();
+    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+    properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+    
+    return new DefaultKafkaProducerFactory<String, String>(properties);
+  }
+
+  @Bean
+  KafkaTemplate<String, String> producer() {
+    return new KafkaTemplate<String, String>(producerFactory());
+  }
+
+  @Bean
+  ConsumerFactory<String, String> consumerFactory() {
+    Map<String, Object> properties = new HashMap<>();
+    properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+    properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+    properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+    
+    return new DefaultKafkaConsumerFactory<>(properties);
+  }
+
+  @Bean
+  ConcurrentKafkaListenerContainerFactory<String, String> containerFactory() {
+    ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    factory.setConsumerFactory(consumerFactory());
+    return factory;
+  }
 
   @Bean
   ProducerFactory<String, NewStreamEvent> newStreamEventProducerFactory() {
@@ -37,12 +69,12 @@ public class KafkaConfig {
     properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
     properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
     
-    return new DefaultKafkaProducerFactory<>(properties);
+    return new DefaultKafkaProducerFactory<String, NewStreamEvent>(properties);
   }
 
   @Bean
   KafkaTemplate<String, NewStreamEvent> newStreamEventProducer() {
-    return new KafkaTemplate<>(newStreamEventProducerFactory());
+    return new KafkaTemplate<String, NewStreamEvent>(newStreamEventProducerFactory());
   }
 
   @Bean

@@ -32,6 +32,14 @@ eureka:
     enabled: false
 
 kafka:
-  bootstrap-servers: localhost:9092
   consumer:
+    bootstrap-servers: localhost:9092
     group-id: mystream-user
+    auto-offset-reset: earliest
+    # key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    # value-deserializer: org.apache.kafka.common.serialization.JsonDeserializer
+    enable-auto-commit: false
+  producer:
+    bootstrap-servers: localhost:9092
+    # key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    # value-serializer: org.apache.kafka.common.serialization.JsonSerializer
