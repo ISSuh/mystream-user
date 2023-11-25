@@ -41,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 import mystream.user.dto.SignUpDto;
 import mystream.user.dto.UserDto;
 import mystream.user.exceptions.NotFoundException;
+import mystream.user.service.external.EventFallbackService;
 import mystream.user.service.external.event.NewStreamEvent;
 import mystream.user.service.external.event.NewStreamFacllbackEvent;
 import mystream.user.service.kafka.TestConsumer;

@@ -3,16 +3,15 @@ package mystream.user.dto;
 import lombok.Data;
 
 @Data
-public class FollowDto {
+public class FollowingDto {
   
   private Long userId;
-
   private Long channelId;
 
-  public FollowDto() {
+  public FollowingDto() {
   }
 
-  public FollowDto(Long userId, Long channelId) {
+  public FollowingDto(Long userId, Long channelId) {
     this.userId = userId;
     this.channelId = channelId;
   }

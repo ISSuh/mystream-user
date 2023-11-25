@@ -20,14 +20,11 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
-import mystream.user.service.external.event.NewStreamEvent;
-import mystream.user.service.external.event.NewStreamFacllbackEvent;
-
 @Configuration
 @EnableKafka
 public class KafkaConfig {
   
-  @Value("${kafka.consumer.bootstrap-servers}")
+  @Value("${kafka.bootstrap-servers}")
   private String bootstrapServer;
 
   @Bean
@@ -62,35 +59,4 @@ public class KafkaConfig {
     return factory;
   }
 
-  @Bean
-  ProducerFactory<String, NewStreamEvent> newStreamEventProducerFactory() {
-    Map<String, Object> properties = new HashMap<>();
-    properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
-    properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-    properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-    
-    return new DefaultKafkaProducerFactory<String, NewStreamEvent>(properties);
-  }
-
-  @Bean
-  KafkaTemplate<String, NewStreamEvent> newStreamEventProducer() {
-    return new KafkaTemplate<String, NewStreamEvent>(newStreamEventProducerFactory());
-  }
-
-  @Bean
-  ConsumerFactory<String, NewStreamFacllbackEvent> newStreamFallbackConsumerFactory() {
-    Map<String, Object> properties = new HashMap<>();
-    properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
-    properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-    properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
-    
-    return new DefaultKafkaConsumerFactory<>(properties);
-  }
-
-  @Bean
-  ConcurrentKafkaListenerContainerFactory<String, NewStreamFacllbackEvent> newStreamFallbackContainerFactory() {
-    ConcurrentKafkaListenerContainerFactory<String, NewStreamFacllbackEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
-    factory.setConsumerFactory(newStreamFallbackConsumerFactory());
-    return factory;
-  }
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import mystream.user.dto.FollowDto;
+import mystream.user.dto.FollowingDto;
 import mystream.user.entity.FollowStatus;
 import mystream.user.entity.FollowedChannel;
 import mystream.user.entity.User;
@@ -23,7 +23,7 @@ public class FollowService {
   private final UserRepository userRepository;
   private final FollowRepository followRepository;
 
-  public void processFollowOrUnFollow(FollowDto followDto, FollowStatus status) {
+  public void processFollowOrUnFollow(FollowingDto followDto, FollowStatus status) {
     FollowedChannel channel = presentOrCtreateFollowedChannel(followDto);
     if (channel.getFollowStatus() == status) {
       throw new InvalidFollowException("already " + status.toString() + " channel. " + followDto.getChannelId());
@@ -37,7 +37,7 @@ public class FollowService {
     channel.updateFollowStatus(status);
   }
 
-  private FollowedChannel presentOrCtreateFollowedChannel(FollowDto followDto) {
+  private FollowedChannel presentOrCtreateFollowedChannel(FollowingDto followDto) {
     Optional<User> findUser = userRepository.findUserById(followDto.getUserId());
     User user = findUser.orElseThrow(
       () -> new NotFoundException("not found user. " + followDto.getUserId()));

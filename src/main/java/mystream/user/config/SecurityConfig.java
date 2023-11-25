@@ -14,12 +14,12 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
   
   @Bean
-  public PasswordEncoder passwordEncoder() {
+  PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   } 
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+  SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
     // TODO(issuh) : need implement security configure
     httpSecurity
       .csrf().disable().authorizeRequests().anyRequest().permitAll();
