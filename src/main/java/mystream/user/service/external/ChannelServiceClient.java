@@ -1,6 +1,8 @@
 package mystream.user.service.external;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -12,11 +14,16 @@ import mystream.user.utils.ApiResponse;
 public interface ChannelServiceClient {
   
   @RequestMapping(method = RequestMethod.POST, value = "/api/channel/v1/channel/new")
-  ApiResponse.ApiResult<?> create(NewChannelDto newChannelDto);
+  ApiResponse.ApiResult<?> create(
+    @RequestBody NewChannelDto newChannelDto);
 
   @RequestMapping(method = RequestMethod.PUT, value = "/api/channel/v1/channel/{id}/follow")
-  ApiResponse.ApiResult<?> follow(Long id, FollowingDto followDto);
+  ApiResponse.ApiResult<?> follow(
+    @PathVariable Long id,
+    @RequestBody FollowingDto followDto);
 
   @RequestMapping(method = RequestMethod.PUT, value = "/api/channel/v1/channel/{id}/unfollow")
-  ApiResponse.ApiResult<?> unfollow(Long id, FollowingDto followDto);
+  ApiResponse.ApiResult<?> unfollow(
+    @PathVariable Long id,
+    @RequestBody FollowingDto followDto);
 }

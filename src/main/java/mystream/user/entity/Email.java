@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 
 import com.google.common.base.Preconditions;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 
@@ -13,6 +14,7 @@ import lombok.Getter;
 @Getter
 public class Email {
   
+  @Column(name = "email")
   private String address;
 
   protected Email() {

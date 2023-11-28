@@ -4,18 +4,18 @@ spring:
   sql:
     init:
       platform: h2
-      # schema-locations: classpath:schema-h2.sql
-      # mode: always
+      schema-locations: classpath:schema-h2.sql
+      mode: always
   datasource:
     driver-class-name: org.h2.Driver
-    url: "jdbc:h2:mem:my_stream;MODE=MYSQL"
+    url: "jdbc:h2:mem:my_stream_user;MODE=MYSQL"
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 
-    # defer-datasource-initialization: true
+    defer-datasource-initialization: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect

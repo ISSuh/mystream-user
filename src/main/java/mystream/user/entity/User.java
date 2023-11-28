@@ -26,9 +26,6 @@ public class User extends ModifyTime {
   @Column(name = "user_id")
   private Long id;
 
-  @Column(name = "channel_id", unique = true)
-  private Long channelId;
-
   @Embedded
   @Column(name = "email", nullable = false, unique = true)
   private Email email;
@@ -46,13 +43,12 @@ public class User extends ModifyTime {
   Map<Long, SubscribedChannel> subscribedChannels = new HashMap<>();
 
   public User(Email email, String username, String password) {
-    this(null, null, email, username, password, null, null);
+    this(null, email, username, password, null, null);
   }
 
-  public User(Long id, Long channelId, Email email, String username, String password,
+  public User(Long id, Email email, String username, String password,
       Map<Long, FollowedChannel> followingChannels, Map<Long, SubscribedChannel> subscribedChannels) {
     this.id = id;
-    this.channelId = channelId;
     this.email = email;
     this.username = username;
     this.password = password;
