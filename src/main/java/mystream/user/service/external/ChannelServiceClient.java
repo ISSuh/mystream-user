@@ -15,8 +15,8 @@ public interface ChannelServiceClient {
   ApiResponse.ApiResult<?> create(NewChannelDto newChannelDto);
 
   @RequestMapping(method = RequestMethod.PUT, value = "/api/channel/v1/channel/{id}/follow")
-  ApiResponse.ApiResult<?> follow(FollowingDto followDto);
+  ApiResponse.ApiResult<?> follow(Long id, FollowingDto followDto);
 
   @RequestMapping(method = RequestMethod.PUT, value = "/api/channel/v1/channel/{id}/unfollow")
-  ApiResponse.ApiResult<?> unfollow(FollowingDto followDto);
+  ApiResponse.ApiResult<?> unfollow(Long id, FollowingDto followDto);
 }

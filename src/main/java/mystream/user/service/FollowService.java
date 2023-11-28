@@ -14,6 +14,8 @@ import mystream.user.exceptions.InvalidFollowException;
 import mystream.user.exceptions.NotFoundException;
 import mystream.user.repository.FollowRepository;
 import mystream.user.repository.UserRepository;
+import mystream.user.service.external.ChannelServiceClient;
+import mystream.user.utils.ApiResponse.ApiResult;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +24,8 @@ public class FollowService {
   
   private final UserRepository userRepository;
   private final FollowRepository followRepository;
+  private final ChannelServiceClient channelServiceClient;
+
 
   public void processFollowOrUnFollow(FollowingDto followDto, FollowStatus status) {
     FollowedChannel channel = presentOrCtreateFollowedChannel(followDto);
@@ -29,12 +33,15 @@ public class FollowService {
       throw new InvalidFollowException("already " + status.toString() + " channel. " + followDto.getChannelId());
     }
 
-    // TODO(issuh) : need implement request to channel service
-    // if (fail) {
-    //   throw new exception
-    // }
+    // request to channel service
+    if (status == FollowStatus.FOLLOW) {
+      requestUpdateToFollow(followDto);
+    } else {
+      requestUpdateToUnfollow(followDto);
+    }
 
-    channel.updateFollowStatus(status);
+    FollowedChannel savedChannel = followRepository.save(channel);
+    savedChannel.updateFollowStatus(status);
   }
 
   private FollowedChannel presentOrCtreateFollowedChannel(FollowingDto followDto) {
@@ -45,6 +52,20 @@ public class FollowService {
     Optional<FollowedChannel> findChannel = followRepository.findById(followDto.getUserId());
     return findChannel.orElse(
         new FollowedChannel(followDto.getChannelId(), user));
+  }
+
+  private void requestUpdateToFollow(FollowingDto followDto) {
+    ApiResult<?> response = channelServiceClient.follow(followDto.getChannelId(), followDto);
+    if (!response.isSuccess()) {
+      throw new InvalidFollowException("can not update follow status from channel service");
+    }
+  }
+
+  private void requestUpdateToUnfollow(FollowingDto followDto) {
+    ApiResult<?> response = channelServiceClient.unfollow(followDto.getChannelId(), followDto);
+    if (!response.isSuccess()) {
+      throw new InvalidFollowException("can not update unfollow status from channel service");
+    }
   }
 
 }

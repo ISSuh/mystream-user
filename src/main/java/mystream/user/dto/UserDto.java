@@ -8,8 +8,6 @@ public class UserDto {
   
   private Long id;
 
-  private Long channelId;
-
   private String email;
 
   private String username;
@@ -19,7 +17,6 @@ public class UserDto {
 
   public UserDto(User user) {
     this.id = user.getId();
-    this.channelId = user.getChannelId();
     this.email = user.getEmail().toEmailAddress();
     this.username = user.getUsername();
   }

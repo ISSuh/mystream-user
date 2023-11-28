@@ -13,7 +13,7 @@ import mystream.user.service.FollowService;
 import mystream.user.utils.ApiResponse;
 
 @RestController
-@RequestMapping("api/user/v1/following")
+@RequestMapping("/api/user/v1/following")
 @RequiredArgsConstructor
 public class FollowingRestController {
   
