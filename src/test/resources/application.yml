@@ -1,18 +1,19 @@
 spring:
   application: 
     name: mystream-user
+  profiles:
+      active: test
   sql:
     init:
       platform: h2
   datasource:
     driver-class-name: org.h2.Driver
-    url: "jdbc:h2:mem:my_stream;MODE=MYSQL"
+    url: "jdbc:h2:mem:my_stream_user_test;MODE=MYSQL"
   jpa:
     hibernate:
       ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect

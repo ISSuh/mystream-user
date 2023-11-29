@@ -9,8 +9,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import mystream.user.utils.ApiResponse;
-import mystream.user.utils.ApiResponse.ApiResult;
+import mystream.user.api.utils.ApiResponse;
+import mystream.user.api.utils.ApiResponse.ApiResult;
+import mystream.user.exceptions.common.NotFoundException;
+import mystream.user.exceptions.following.InvalidFollowException;
+import mystream.user.exceptions.user.InvalidSignupException;
+import mystream.user.exceptions.user.InvalidUserProfileException;
 
 @ControllerAdvice
 public class GeneralExceptionHandler {
