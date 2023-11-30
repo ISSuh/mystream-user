@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -34,7 +33,6 @@ import mystream.user.domain.user.entity.User;
 import mystream.user.domain.user.repository.UserRepository;
 
 @SpringBootTest
-@Import(value = {TestConfig.class})
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 @Transactional
@@ -65,8 +63,8 @@ public class FollowingRestControllerTest {
 
       userRepository.saveEntity(user);
 
-      Long channelId = id;
-      channelServiceMock.addTestIds(id, channelId);
+      // Long channelId = id;
+      // channelServiceMock.addTestIds(id, channelId);
     }
   }
 

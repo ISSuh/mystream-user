@@ -16,7 +16,7 @@ import mystream.user.domain.user.entity.User;
 import mystream.user.domain.user.repository.UserRepository;
 import mystream.user.exceptions.common.NotFoundException;
 import mystream.user.exceptions.following.InvalidFollowException;
-import mystream.user.infrastructure.external.ChannelServiceClient;
+import mystream.user.infrastructure.external.rest.ChannelServiceClient;
 
 @Service
 @Transactional

@@ -1,4 +1,4 @@
-package mystream.user.infrastructure.external.impl;
+package mystream.user.infrastructure.external.rest;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,7 +10,7 @@ import mystream.user.api.utils.ApiResponse;
 import mystream.user.domain.following.dto.FollowingDto;
 
 @FeignClient("mystream-channel")
-public interface ChannelServiceFeignClient {
+public interface ChannelServiceClient {
 
   @RequestMapping(method = RequestMethod.PUT, value = "/api/channel/v1/channel/{id}/follow")
   ApiResponse.ApiResult<?> followRequest(

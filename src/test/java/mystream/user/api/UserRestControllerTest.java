@@ -3,10 +3,11 @@ package mystream.user.api;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -28,11 +29,12 @@ import mystream.user.domain.user.entity.Email;
 import mystream.user.domain.user.entity.User;
 import mystream.user.domain.user.repository.UserRepository;
 
-@SpringBootTest
+@SpringBootTest()
 @ActiveProfiles("test")
-@Import(value = {TestConfig.class})
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@AutoConfigureWireMock(port = 0)
 @Transactional
 @Slf4j
 public class UserRestControllerTest {
@@ -47,7 +49,7 @@ public class UserRestControllerTest {
   private BroadcastServiceMock broadcastServiceMock;
 
   @BeforeEach
-  public void BeforeEach() {
+  public void beforeEach() {
     for (Long i = 0L ; i < 10 ; i++) {
       Long id = i + 1;
       Email email = Email.of("user" + id + "@gmail.com");
@@ -57,8 +59,8 @@ public class UserRestControllerTest {
 
       userRepository.saveEntity(user);
 
-      Long streamId = id;
-      broadcastServiceMock.addTestIds(id, streamId);
+      // Long streamId = id;
+      // broadcastServiceMock.addTestIds(id, streamId);
     }
   }
 

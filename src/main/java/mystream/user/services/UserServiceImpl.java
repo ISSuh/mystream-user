@@ -18,7 +18,7 @@ import mystream.user.domain.user.service.UserService;
 import mystream.user.exceptions.common.NotFoundException;
 import mystream.user.exceptions.user.InvalidSignupException;
 import mystream.user.exceptions.user.InvalidUserProfileException;
-import mystream.user.infrastructure.external.BroadcastServiceClient;
+import mystream.user.infrastructure.external.rest.BroadcastServiceClient;
 
 @Service
 @Transactional
