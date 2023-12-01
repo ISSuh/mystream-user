@@ -7,11 +7,10 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.extern.slf4j.Slf4j;
 import mystream.user.api.mock.BroadcastServiceMock;
 import mystream.user.domain.user.dto.SignUpDto;
 import mystream.user.domain.user.dto.UserDto;
@@ -30,13 +28,11 @@ import mystream.user.domain.user.entity.User;
 import mystream.user.domain.user.repository.UserRepository;
 
 @SpringBootTest()
-@ActiveProfiles("test")
+@Import(value = {ApiTestConfig.class})
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@AutoConfigureWireMock(port = 0)
 @Transactional
-@Slf4j
 public class UserRestControllerTest {
 
   @Autowired
@@ -59,8 +55,8 @@ public class UserRestControllerTest {
 
       userRepository.saveEntity(user);
 
-      // Long streamId = id;
-      // broadcastServiceMock.addTestIds(id, streamId);
+      Long streamId = id;
+      broadcastServiceMock.addTestIds(id, streamId);
     }
   }
 

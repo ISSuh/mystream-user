@@ -30,6 +30,15 @@ public class UserServiceImpl implements UserService {
 
   private final BroadcastServiceClient broadcastServiceClient;
 
+  // public UserServiceImpl(
+  //   UserRepository userRepository,
+  //   PasswordEncoder passwordEncoder,
+  //   BroadcastServiceClient broadcastServiceClient) {
+  //   this.userRepository = userRepository;
+  //   this.passwordEncoder = passwordEncoder;
+  //   this.broadcastServiceClient = broadcastServiceClient;
+  // }
+
   @Override
   public UserDto findUserById(Long id) {
     return userRepository.findUserDto(id)

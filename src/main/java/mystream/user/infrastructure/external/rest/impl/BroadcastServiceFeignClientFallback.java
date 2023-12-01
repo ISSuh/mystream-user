@@ -1,9 +1,9 @@
-package mystream.user.infrastructure.external.rest;
+package mystream.user.infrastructure.external.rest.impl;
 
 import mystream.user.api.utils.ApiResponse.ApiResult;
 import mystream.user.domain.user.dto.NewStreamDto;
 
-public class BroadcastServiceFeignClientFallback implements BroadcastServiceClient {
+public class BroadcastServiceFeignClientFallback implements BroadcastServiceFeignClient {
 
   @Override
   public ApiResult<?> createStreamRequest(NewStreamDto newStreamDto) {

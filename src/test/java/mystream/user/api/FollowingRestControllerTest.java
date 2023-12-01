@@ -6,9 +6,12 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -32,9 +35,12 @@ import mystream.user.domain.user.entity.Email;
 import mystream.user.domain.user.entity.User;
 import mystream.user.domain.user.repository.UserRepository;
 
-@SpringBootTest
+@SpringBootTest()
 @AutoConfigureMockMvc
+@Import(value = {ApiTestConfig.class})
+// @AutoConfigureWireMock(port = 0)
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
+@TestInstance(Lifecycle.PER_CLASS)
 @Transactional
 @Slf4j
 public class FollowingRestControllerTest {
@@ -63,8 +69,8 @@ public class FollowingRestControllerTest {
 
       userRepository.saveEntity(user);
 
-      // Long channelId = id;
-      // channelServiceMock.addTestIds(id, channelId);
+      Long channelId = id;
+      channelServiceMock.addTestIds(id, channelId);
     }
   }
 
@@ -114,9 +120,6 @@ public class FollowingRestControllerTest {
 
     ObjectMapper mapper = new ObjectMapper();
     String dtoJsonString = mapper.writeValueAsString(followingDto);
-
-    // Optional<User> findById = userRepository.findById(userId);
-    // log.info("[TEST] user : ", findById.get());
 
     // when
     ResultActions result = mockMvc.perform(
