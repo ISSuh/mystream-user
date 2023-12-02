@@ -2,6 +2,7 @@ package mystream.user.services;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,11 @@ public class FollowServiceImpl implements FollowService {
 
     FollowedChannel savedChannel = followRepository.saveEntity(channel);
     savedChannel.updateFollowStatus(status);
+  }
+
+  @Override
+  public void findFollowingChannels(Long id, Pageable pageable) {
+    return;
   }
 
   private FollowedChannel presentOrCtreateFollowedChannel(FollowingDto followDto) {

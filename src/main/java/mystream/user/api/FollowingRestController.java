@@ -1,5 +1,9 @@
 package mystream.user.api;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +31,13 @@ public class FollowingRestController {
   @PutMapping("/unfollow")
   public ApiResponse.ApiResult<?> unfollowChannel(@RequestBody FollowingDto followDto) {
     followService.processFollowOrUnFollow(followDto, FollowStatus.UNFOLLOW);
+    return ApiResponse.success(null);
+  }
+
+  @GetMapping("/{id}/list")
+  public ApiResponse.ApiResult<?> followingChannels(
+    @PathVariable Long id,
+    @PageableDefault(size = 5) Pageable pageable) {
     return ApiResponse.success(null);
   }
 
