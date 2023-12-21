@@ -39,6 +39,8 @@ public class User extends ModifyTime {
   @Column(name = "password", nullable = false)
   private String password;
 
+  private String Role;
+
   @OneToMany(mappedBy = "user")
   Map<Long, FollowedChannel> followingChannels = new HashMap<>();
 
