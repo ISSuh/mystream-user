@@ -10,4 +10,5 @@ public interface FollowService {
   void processFollowOrUnFollow(FollowingDto followDto, FollowStatus status);
 
   void findFollowingChannels(Long id, Pageable pageable);
+
 }
